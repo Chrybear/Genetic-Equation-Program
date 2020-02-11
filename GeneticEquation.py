@@ -20,26 +20,12 @@ class Node:
             if val != 'x':  # x also counts as a numeric value
                 self.operator = True
 
-    # Getters
-    def get_val(self):
-        return self.val
-
-    def get_lc(self):
-        return self.left_child
-
-    def get_rc(self):
-        return self.right_child
-
-    def is_operator(self):
-        return self.operator
-
     # Setters
-    def set_lc(self, node):
-        self.left_child = node
-
-    def set_rc(self, node):
-        self.right_child = node
-
+    # def set_lc(self, node):
+    #     self.left_child = node
+    #
+    # def set_rc(self, node):
+    #     self.right_child = node
 
 
 # Method to construct a random expression tree
@@ -58,52 +44,79 @@ def random_tree():
     return node
 
 
+# Method to crossover between 2 trees
+def cross_over(t1, t2):
+    # The way cross over works for this program is the two trees will have one of their subtree chains randomly swapped between each
+    # other.
+    new_tree = None
+    new_tree2 = None
+    new_subtree1 = None
+    new_subtree2 = None
 
+    # Find splicing point for t1
+    while t1.right_child or t1.left_child:
+        splice_1 = t1.right_child
+        if random.choice(1,2,3) == 1:
+            break
 
+    return new_tree, new_tree2
+
+# Method to search through a tree and randomly find a point to splice
+#def splice(tree, subtree):
 
 def parse_tree(tree):
 
-    if tree.get_lc():
+    if tree.left_child:
         # exp += parse_tree(tree.get_lc()) + tree.get_val()
-        parse_tree(tree.get_lc())
-    print(tree.get_val())
-    if tree.get_rc():
+        parse_tree(tree.left_child)
+    print(tree.val)
+    if tree.right_child:
         # exp += tree.get_rc().get_val() + parse_tree(tree.get_rc())
-        parse_tree(tree.get_rc())
+        parse_tree(tree.right_child)
 
 
 # This method will return the value from all the expressions in the tree
-def eval_exp(tree, x):
+def eval_exp(tree, x=1): # 1 is just a default value
     val = 0
-    if not tree.is_operator():  # Value is not an operator, therefore it is a leaf node.
-        if tree.get_val() == 'x':
+    if not tree.operator:  # Value is not an operator, therefore it is a leaf node.
+        if tree.val == 'x':
             return x
         else:
-            return tree.get_val()
+            return tree.val
     else:
-        val += eval_exp(tree.get_lc(), x)
+        val += eval_exp(tree.left_child, x)
         # Left subtrees of the node have been fully traversed after above recursive call finishes
         # Begin traversing right subtrees
-        if tree.get_val() == '+':
-            val += eval_exp(tree.get_rc(), x)
-        elif tree.get_val() == '-':
-            val -= eval_exp(tree.get_rc(), x)
-        elif tree.get_val() == '*':  # The book uses 'X' for multiplication, but I don't like that.
-            val *= eval_exp(tree.get_rc(), x)
-        elif tree.get_val() == '/':
-            val /= eval_exp(tree.get_rc(), x)  # Apparently, python doesn't have switch cases?
+        if tree.val == '+':
+            val += eval_exp(tree.right_child, x)
+        elif tree.val == '-':
+            val -= eval_exp(tree.right_child, x)
+        elif tree.val == '*':  # The book uses 'X' for multiplication, but I don't like that.
+            val *= eval_exp(tree.right_child, x)
+        elif tree.val == '/':
+            val /= eval_exp(tree.right_child, x)  # Apparently, python doesn't have switch cases?
     return val
 
 
 # Main
 def main():
     # Testing Area
-    print('heh')
-    for x in range(0, 12):
-        n = random_tree()
-        parse_tree(n)
-        print('That tree when x = 1 is ', eval_exp(n, 1))
-        print()
+    x = Node('+',Node(1),Node(2))
+    y = Node('*',Node(3),Node(9))
+    parse_tree(x), parse_tree(y)
+    print(eval_exp(x), eval_exp(y))
+    tm = x.left_child
+    tw = y.right_child
+    x.left_child, y.right_child = y.right_child, x.left_child
+    parse_tree(x), parse_tree(y)
+    print(eval_exp(x), eval_exp(y))
+
+
+    # for x in range(0, 12):
+    #     n = random_tree()
+    #     parse_tree(n)
+    #     print('That tree when x = 1 is ', eval_exp(n, 1))
+    #     print()
     #parse_tree(n)
     # tree = Node('+',Node(3),Node(2))
     # parse_tree(tree)
