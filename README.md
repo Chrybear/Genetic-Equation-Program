@@ -1,7 +1,7 @@
 # Genetic-Equation-Program
 CSC 320 assignment 2, work in progresss
 
-This program is meant to use a genetic programming to find the equation, or closest match equation, for a set of values.
+This program is meant to use genetic programming to find the equation, or closest match equation, for a set of values.
 
 The default values are: [0, .005, .020, .045, .080, .125, .180, .245, .320, .405] @ line 221 in the code.
 
